@@ -1,0 +1,15 @@
+version: "3.8"
+services:
+  mock-erp:
+    build: ./mock-erp
+    ports:
+      - "8054:8054"
+
+  integration:
+    build: ./integration
+    depends_on:
+      - mock-erp
+    environment:
+      - ERP_API_URL=http://mock-erp:8054/erp/accounts
+      - SALESFORCE_API_URL=https://your-instance.salesforce.com/services/data/vXX.X/sobjects/Account
+      - SALESFORCE_ACCESS_TOKEN=your_salesforce_access_token
