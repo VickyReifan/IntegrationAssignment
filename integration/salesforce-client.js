@@ -1,15 +1,8 @@
 const Joi = require("joi");
-const axiosRetry = require("axios-retry").default;
 const axios = require("axios");
 const qs = require("qs");
 const config = require("./config");
-
-const SalesforceTokenValidetionSchema = Joi.object({
-	data: Joi.object({
-		access_token: Joi.string().min(1).required(),
-		instance_url: Joi.string().min(1).required(),
-	}).required(),
-}).required();
+const {SalesforceTokenValidationSchema} = require("./validation-schemas");
 
 class SalesforceClient {
 	constructor() {}
@@ -39,7 +32,7 @@ class SalesforceClient {
 				headers: { "Content-Type": "application/x-www-form-urlencoded" },
 			});
 
-			const { error } = SalesforceTokenValidetionSchema.validate(response, {
+			const { error } = SalesforceTokenValidationSchema.validate(response, {
 				allowUnknown: true,
 			});
 
@@ -104,16 +97,5 @@ class SalesforceClient {
 		}
 	}
 }
-
-axiosRetry(axios, {
-	retries: config.retryCount,
-	retryDelay: axiosRetry.exponentialDelay,
-	shouldRetry: (error) => {
-		return (
-			(error.response && error.response.status >= 500) ||
-			axiosRetry.isNetworkError(error)
-		);
-	},
-});
 
 module.exports = SalesforceClient;
