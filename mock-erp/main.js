@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 const port = process.env.PORT || 8054;
+const host = process.env.HOST || "localhost";
 
 app.get("/erp/accounts", (req, res) => {
   // Simulated ERP account data
@@ -14,6 +15,6 @@ app.get("/erp/accounts", (req, res) => {
   res.json(accounts);
 });
 
-app.listen(port, "localhost", () => {
+app.listen(port, host, () => {
   console.log(`Mock ERP service listening on port ${port}`);
 });
